@@ -49,8 +49,9 @@ const ContactPage = () => {
                     <Phone className="text-gold mt-1 shrink-0" size={18} />
                     <div>
                       <p className="font-body text-sm font-medium">Phone</p>
-                      <p className="text-muted-foreground text-sm font-body">+971 4 XXX XXXX (UAE)</p>
-                      <p className="text-muted-foreground text-sm font-body">+90 212 XXX XXXX (Turkey)</p>
+                      <a href="tel:+971541375617" className="text-muted-foreground text-sm font-body hover:text-gold transition-colors">
+                        +971 54 137 5617 (UAE)
+                      </a>
                     </div>
                   </li>
                 </ul>

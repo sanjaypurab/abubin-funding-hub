@@ -12,9 +12,12 @@ import { useToast } from "@/hooks/use-toast";
 
 const steps = ["Personal Info", "Business Details", "Funding Request", "Documents", "Review"];
 
+const FORMSUBMIT_URL = "https://formsubmit.co/ajax/customercare@abubinluqmoninvestcompany.com";
+
 const ApplyPage = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
   const [form, setForm] = useState({
     fullName: "", email: "", phone: "", nationality: "",

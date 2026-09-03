@@ -37,13 +37,41 @@ const ApplyPage = () => {
     if (currentStep > 0) setCurrentStep((s) => s - 1);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.agree) {
       toast({ title: "Please agree to the terms", variant: "destructive" });
       return;
     }
-    setSubmitted(true);
-    toast({ title: "Application Submitted", description: "We will review your application and contact you soon." });
+    setSubmitting(true);
+    try {
+      const data = new FormData();
+      data.append("_subject", `New Funding Application: ${form.fullName}`);
+      data.append("Full Name", form.fullName);
+      data.append("Email", form.email);
+      data.append("Phone", form.phone);
+      data.append("Nationality", form.nationality);
+      data.append("Business Name", form.businessName);
+      data.append("Business Type", form.businessType);
+      data.append("Years in Business", form.yearsInBusiness);
+      data.append("Annual Revenue (USD)", form.annualRevenue);
+      data.append("Loan/Investment Type", form.loanType);
+      data.append("Amount Requested (USD)", form.amount);
+      data.append("Preferred Repayment Period", form.repaymentPeriod);
+      data.append("Purpose of Funding", form.purpose);
+      form.documents.forEach((file) => data.append("attachments", file, file.name));
+      const res = await fetch(FORMSUBMIT_URL, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: data,
+      });
+      if (!res.ok) throw new Error("Submit failed");
+      setSubmitted(true);
+      toast({ title: "Application Submitted", description: "We will review your application and contact you soon." });
+    } catch {
+      toast({ title: "Submission failed", description: "Please try again or contact us directly.", variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -244,7 +272,9 @@ const ApplyPage = () => {
               {currentStep < steps.length - 1 ? (
                 <Button variant="gold" onClick={next}>Continue</Button>
               ) : (
-                <Button variant="hero" onClick={handleSubmit}>Submit Application</Button>
+                <Button variant="hero" onClick={handleSubmit} disabled={submitting}>
+                  {submitting ? "Submitting..." : "Submit Application"}
+                </Button>
               )}
             </div>
           </motion.div>

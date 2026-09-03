@@ -136,8 +136,8 @@ const ContactPage = () => {
                   </div>
                   <div><Label>Subject *</Label><Input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} required /></div>
                   <div><Label>Message *</Label><Textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} rows={5} required /></div>
-                  <Button type="submit" variant="gold" size="lg">
-                    <Send size={16} /> Send Message
+                  <Button type="submit" variant="gold" size="lg" disabled={sending}>
+                    <Send size={16} /> {sending ? "Sending..." : "Send Message"}
                   </Button>
                 </form>
               </div>

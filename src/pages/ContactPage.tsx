@@ -9,14 +9,36 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
+const FORMSUBMIT_URL = "https://formsubmit.co/ajax/customercare@abubinluqmoninvestcompany.com";
+
 const ContactPage = () => {
   const { toast } = useToast();
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [sending, setSending] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({ title: "Message Sent", description: "Thank you for contacting us. We'll respond within 24 hours." });
-    setForm({ name: "", email: "", subject: "", message: "" });
+    setSending(true);
+    try {
+      const res = await fetch(FORMSUBMIT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          _subject: `Website Contact: ${form.subject}`,
+          name: form.name,
+          email: form.email,
+          subject: form.subject,
+          message: form.message,
+        }),
+      });
+      if (!res.ok) throw new Error("Send failed");
+      toast({ title: "Message Sent", description: "Thank you for contacting us. We'll respond within 24 hours." });
+      setForm({ name: "", email: "", subject: "", message: "" });
+    } catch {
+      toast({ title: "Message failed to send", description: "Please try again or email us directly.", variant: "destructive" });
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -114,8 +136,8 @@ const ContactPage = () => {
                   </div>
                   <div><Label>Subject *</Label><Input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} required /></div>
                   <div><Label>Message *</Label><Textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} rows={5} required /></div>
-                  <Button type="submit" variant="gold" size="lg">
-                    <Send size={16} /> Send Message
+                  <Button type="submit" variant="gold" size="lg" disabled={sending}>
+                    <Send size={16} /> {sending ? "Sending..." : "Send Message"}
                   </Button>
                 </form>
               </div>
